@@ -1,0 +1,27 @@
+{
+  "name": "chatserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "radhik.g@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "express" : "latest",
+    "http" : "latest",
+    "jquery": "latest",
+    "socket.io": "latest",
+    "passport-google-oauth": "latest",
+    "passport" : "latest",
+    "body-parser": "latest",
+    "express-session": "latest",
+    "passport-google-oauth20": "latest",
+    "cookie-parser": "latest",
+    "autocomplete-js": "latest",
+    "passport.socketio": "latest",
+    "mongodb": "latest",
+    "connect-mongo": "latest"
+  }
+}

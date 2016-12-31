@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #00a5bb;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s
+        }
+
+        .sidenav a:hover, .offcanvas a:focus{
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        .main-container-class {
+            position: relative;
+            transition: margin-left .5s;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .main-menu-class {
+            height: 53px;
+            background: darkslateblue;
+        }
+        .main-msg-container-class {
+            margin-top: 0;
+            overflow: hidden;
+            display: flex;
+            background: skyblue;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .chatlist-class {
+            overflow: auto;
+            align: left;
+            text-align: center;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="sidenav-menu" class="sidenavmenu">
+
+    </div>
+    <form class="ui-filterable">
+        <input id="myFilter" data-type="search" placeholder="Search for names..">
+    </form>
+    <ul id="chatlist" class="chatlist-class">
+    </ul>
+</div>
+
+<div id="chat-tab-container" chatid = "">
+    <div id="main-container" class="main-container-class">
+        <header id="main-menu" class="main-menu-class"><span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span> </header>
+        <div id="main-msg-container" class="main-msg-container-class" style="overflow-y: auto; height: 848px;"></div>
+        <footer id="main-menu-footer" class="main-menu-footer-class">
+            <form id="message-text-form" class="message-text-class">
+                <input type="text" id="message-text" placeholder="Say Something..." style="width:94%;float:left;">
+                <input type="submit" style="width:5%;float:right;" value="send">
+            </form>
+        </footer>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("main-container").style.marginLeft = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main-container").style.marginLeft= "0";
+    }
+</script>
+
+<script>
+
+    $(function() {
+
+        var chats= {
+            "1234" : {
+                msgs : [""],
+                endsocket : null,
+                name: 'Sridhar'
+            }
+        };
+        var currentChatId = null;
+
+        var $messageForm = $('#message-text-form');
+        var $mainMsg = $('#main-msg-container');
+        var $messageText = $('#message-text');
+
+/*
+        $.getJSON( "/friends-json", function( data ) {
+            console.log(null, data);
+            var ulitems = [];
+            data.forEach(function(item){
+                console.log(item.name + ' ' + item.id);
+                ulitems.push( "<li id='" + item.id + "'>" +  item.name + "<span class='ui-li-count" + "'>25" + "</span>" + "</li>" );
+            });
+
+            $('#friendslist').append(ulitems);
+
+        });
+*/
+        $.getJSON( "/chats-json", function( data ) {
+            console.log(null, data);
+            var ulitems = [];
+            data.forEach(function(item){
+                console.log(item.name + ' ' + item.id);
+                ulitems.push( "<li id=" + item.id + ">" + item.name + "</li>" );
+                chats[item.id] = {name : item.name,
+                    socket: null,
+                    msgs : ["Hello", "fine thank you"]
+                };
+            });
+
+            $('#chatlist').append(ulitems);
+
+        });
+
+        $messageForm.submit(function(e){
+            e.preventDefault();
+            chats[currentChatId].endsocket.emit('message', $messageText.val());
+            $messageText.val('');
+        });
+
+
+        var link = document.getElementById("chatlist");
+        attachEvent(link, "click", ChatEventHandler);
+
+        function attachEvent(element, type, handler) {
+            if (element.addEventListener) element.addEventListener(type, handler, false);
+            else element.attachEvent("on"+type, handler);
+        }
+
+        function ChatEventHandler(e) {
+            console.log('sridhar' + e.target.id);
+            var id = e.target.id;
+            if(!e.target.id | e.target.id === 'chatlist') {
+                console.error('id' + e.target.id);
+                return;
+            }
+            console.log(null, chats[id]);
+            if(!chats[id]) {
+                console.error('this shouldnt happen');
+            }
+            if(chats[id].endsocket === undefined) {
+                chats[id].endsocket = io.connect();
+                chats[id].endsocket.emit('roomid',id);
+                console.log(null, chats[id].endsocket);
+                chats[id].endsocket.on('new message', function(data){
+                    $mainMsg.append(data+'<br>');
+                });
+            }
+
+            currentChatId= id;
+
+        }
+
+    });
+</script>
+
+</body>
+</html>
