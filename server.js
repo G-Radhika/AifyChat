@@ -66,7 +66,7 @@ function extractProfile (profile) {
 passport.use(new GoogleStrategy({
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "https://1544141b.ngrok.io/auth/google/callback"
+        callbackURL: "https://0db94d18.ngrok.io/auth/google/callback"
     },
     function(accessToken, refreshToken, profile, done) {
         var user = extractProfile(profile);
@@ -143,6 +143,12 @@ expressHandler.get('/user-search', function (req, res) {
         ]);
 
 });
+
+expressHandler.get('/user-me', function (req, res) {
+    console.log('GET user-me ' + req.user);
+    res.send(req.user);
+});
+
 
 var server = expressHandler.listen(3000);
 var socketio = require('socket.io').listen(server);

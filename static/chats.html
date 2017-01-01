@@ -65,6 +65,24 @@
             align: left;
             text-align: center;
         }
+        .chat-msg-class {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right: 5px;
+            padding-left: 5px;
+            align: right;
+            text-align: right;
+            wrap-option: auto;
+        }
+        .chat-msg-me-class {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right: 5px;
+            padding-left: 5px;
+            align: left;
+            text-align: left;
+            wrap-option: auto;
+        }
 
         @media screen and (max-height: 450px) {
             .sidenav {padding-top: 15px;}
@@ -78,9 +96,8 @@
 <body>
 
 <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <div id="sidenav-menu" class="sidenavmenu">
-
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     </div>
     <form class="ui-filterable">
         <input id="myFilter" data-type="search" placeholder="Search for names..">
@@ -127,10 +144,13 @@
             }
         };
         var currentChatId = null;
+        var currentUser = null;
 
         var $messageForm = $('#message-text-form');
         var $mainMsg = $('#main-msg-container');
         var $messageText = $('#message-text');
+        var $sidenavMenu = $('#sidenav-menu');
+        var $mainMenuHeader = $('#main-menu');
 
 /*
         $.getJSON( "/friends-json", function( data ) {
@@ -144,7 +164,18 @@
             $('#friendslist').append(ulitems);
 
         });
+
 */
+        $.getJSON( "/user-me", function( data ) {
+            console.log(null, data);
+            currentUser = data;
+            var profileHTML = '<div class="profile"><div class="head">'+currentUser.displayName+'! <a href="javascript:void(0);" onclick="signOut();">Sign out</a></div>';
+            profileHTML += '<img src="'+currentUser.image+'"/></div>';
+            $('.userContent').html(profileHTML);
+            $sidenavMenu.append(profileHTML);
+        });
+
+
         $.getJSON( "/chats-json", function( data ) {
             console.log(null, data);
             var ulitems = [];
@@ -192,8 +223,18 @@
                 chats[id].endsocket.emit('roomid',id);
                 console.log(null, chats[id].endsocket);
                 chats[id].endsocket.on('new message', function(data){
-                    $mainMsg.append(data+'<br>');
+                    var result_div = "";
+                    if(data.startsWith('@' + currentUser.displayName)) {
+                        result_div = "<div class=" + '"chat-msg-me-class"' +">" + data + "</div>";
+                    }else {
+                        result_div = "<div class=" + '"chat-msg-class"' +">" + data + "</div>";
+                    }
+
+                    $mainMsg.append(result_div);
+
                 });
+
+                $mainMenuHeader.append("<div>" + "<a>" +  chats[id].name + "</a>"+ "</div>");
             }
 
             currentChatId= id;
