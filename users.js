@@ -5,8 +5,8 @@
 'use strict';
 
 var userList = {
-    '100054727811509228197' : {id: '100054727811509228197', name: 'Sridhar Uyyala', rooms: [{ name: '#Aify-default', id: '#Aify-default'}], friends:['116244100474711041026']},
-    '116244100474711041026' : {id: '116244100474711041026', name: 'Radhika Godugu', rooms: [{ name: '#Aify-default', id: '#Aify-default'}], friends:['100054727811509228197']},
+    '100054727811509228197' : {id: '100054727811509228197', name: 'Sridhar Uyyala', rooms: [{ name: 'Chat1', id: 'Chat1-ID'}, {name: 'Chat2', id: 'Chat2-id'}], friends:['116244100474711041026']},
+    '116244100474711041026' : {id: '116244100474711041026', name: 'Radhika Godugu', rooms: [{ name: 'Chat1', id: 'Chat1-ID'}, {name: 'Chat2', id: 'Chat2-id'}], friends:['100054727811509228197']},
 };
 
 
