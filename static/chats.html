@@ -125,19 +125,13 @@
         }
 
         .chat-msg-class {
-            padding-top: 5px;
-            padding-bottom: 5px;
-            padding-right: 5px;
-            padding-left: 5px;
+            padding: 5px;
             align: right;
             text-align: right;
             wrap-option: auto;
         }
         .chat-msg-me-class {
-            padding-top: 5px;
-            padding-bottom: 5px;
-            padding-right: 5px;
-            padding-left: 5px;
+            padding: 5px;
             align: left;
             text-align: left;
             wrap-option: auto;
@@ -206,9 +200,10 @@
         <h1>Create New Chat</h1>
         <form id="add-chat-form">
             Name:<br>
-            <input type="text" name="firstname"><br>
-            Friends:<br>
-            <input type="email" name="email">
+            <input type="text" name="name"><br>
+            Email:<br>
+            <input type="email" name="email"><br><br>
+            <input type="submit" value="Submit">
         </form>
     </div>
 </div>
@@ -265,6 +260,7 @@
         var $mainMenuHeader = $('#main-menu');
         var $mainMenuChatName = $('#main-menu-chat-name');
         var $addChatForm = $('#add-chat-form');
+        var clientGenericSocket = io.connect();
 
 /*
         $.getJSON( "/friends-json", function( data ) {
@@ -307,6 +303,15 @@
 
         });
 
+        // Returns a random integer between min (included) and max (excluded)
+        // Using Math.round() will give you a non-uniform distribution!
+        function getRandomString(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return (Math.floor(Math.random() * (max - min)) + min).toString();
+        }
+
+
         $messageForm.submit(function(e){
             e.preventDefault();
             chats[currentChatId].endsocket.emit('message', $messageText.val());
@@ -315,9 +320,27 @@
 
 
         $addChatForm.submit(function(e){
+            var formData = $( this ).serializeArray();
+            var chatName, email;
+            formData.forEach(function(item) {
+                if(item.name === 'name')
+                    chatName = item.value;
+                if(item.name === 'email')
+                    email = item.value;
+            });
+
+            var msg = {roomName: chatName, roomid: getRandomString(1000000, 9999999) ,emails:[email]};
+            //TODO clear form values
+            clientGenericSocket.emit('createroom', msg);
+            var ulitems = [];
+            ulitems.push( "<li id=" + msg.roomid + ">" + msg.roomName + "</li><br/>" );
+            $('#chatlist').append(ulitems);
+            chats[msg.roomid] = {name : msg.roomName,
+                socket: null,
+                msgs : ["Hello", "fine thank you"]
+            };
+            console.log(chatName + email);
             e.preventDefault();
-            chats[currentChatId].endsocket.emit('message', $messageText.val());
-            $messageText.val('');
         });
 
 
@@ -381,7 +404,6 @@
                 console.log('show: ' + newChatDiv);
                 $(newChatDiv).show();
                 $mainMenuChatName.text(chats[id].name);
-
             }
             else if(currentChatId != id) {
                 var chatDiv = '#main-msg-' + currentChatId;
@@ -391,7 +413,6 @@
                 console.log('show: ' + newChatDiv);
                 $(newChatDiv).show();
                 $mainMenuChatName.text(chats[id].name);
-
             }
             currentChatId= id;
 

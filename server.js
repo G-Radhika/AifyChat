@@ -53,7 +53,8 @@ function extractProfile (profile) {
     return {
         id: profile.id,
         displayName: profile.displayName,
-        image: imageUrl
+        image: imageUrl,
+        email: undefined
     };
 }
 
@@ -112,15 +113,12 @@ expressHandler.get('/logout', function(req, res){
     res.redirect('/');
 });
 
-
-
 // respond with "hello world" when a GET request is made to the homepage
 expressHandler.get('/friends-json', function (req, res) {
     console.log('GET friends-json');
 
     res.send(aifyUsers.getFriends(req.user));
 });
-
 
 // respond with "hello world" when a GET request is made to the homepage
 expressHandler.get('/chats-json', function (req, res) {
@@ -161,6 +159,14 @@ socketio.use(passportSocketIo.authorize({
     cookieParser: cookieParser
 }));
 
+// Returns a random integer between min (included) and max (excluded)
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomString(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return (Math.floor(Math.random() * (max - min)) + min).toString;
+}
+
 //Chat handling
 socketio.sockets.on('connection', function (socket) {
     console.log('client connected');
@@ -181,7 +187,18 @@ socketio.sockets.on('connection', function (socket) {
             roomid = msg;
             socket.join(roomid);
         });
+
+        socket.on('createroom', function(msg) {
+            console.log(msg);
+            var roomName = msg.roomName;
+            var roomid  = msg.roomid;
+            var useremails = msg.emails;
+            var room = {name: roomName, id: roomid};
+            var users = [];
+            useremails.forEach(function(email) {
+               users.push(aifyUsers.getUserByEmail(email));
+            });
+            aifyUsers.joinRoom(room, users);
+        });
     }
-
-
 });
