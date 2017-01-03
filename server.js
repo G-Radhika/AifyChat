@@ -13,8 +13,6 @@ var GOOGLE_CLIENT_SECRET= "PBrJQO-a-x3iI_1-eo8B_0vl";
 
 var  aifyUsers = require('./users');
 
-
-
 //express Middleware
 expressHandler.use(express.static(__dirname + '/static'));
 expressHandler.use(cookieParser());
@@ -25,7 +23,7 @@ expressHandler.use(bodyParser.urlencoded({ extended: true })); // for parsing ap
 
 var MongoStore = require('connect-mongo')(session);
 
-var sessionStore = new MongoStore({url:"mongodb://localhost/test",});
+var sessionStore = new MongoStore({url:"mongodb://localhost/test"});
 
 // Configure the session and session storage.
 const sessionConfig = {
@@ -66,7 +64,7 @@ function extractProfile (profile) {
 passport.use(new GoogleStrategy({
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "https://0db94d18.ngrok.io/auth/google/callback"
+        callbackURL: "https://f9e63d24.ngrok.io/auth/google/callback"
     },
     function(accessToken, refreshToken, profile, done) {
         var user = extractProfile(profile);

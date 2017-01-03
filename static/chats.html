@@ -41,13 +41,16 @@
         }
 
         .sidenav .addbtn {
-            position: relative;
-            top: 0;
+            position: absolute;
+            float: right;
             right: 25px;
             font-size: 36px;
             margin-left: 50px;
         }
-
+        #myFilter{
+            height: 53px;
+            background: darkslateblue;
+          }
 
         .main-container-class {
             position: relative;
@@ -96,6 +99,18 @@
             width: 80%;
             align: left;
         }
+        #main-menu-chat-name{
+            display: inline-block;
+            padding: 5px 20px;
+            background-color: transparent;
+            color: white;
+            font-family: Arial, sans;
+            font-size: 15px;
+            border: 1px solid #00a5bb;
+            border-radius: 5px;
+            width: 80%;
+            align: left;
+        }
 
         ul.chatlist-class > li:hover {
 
@@ -127,6 +142,21 @@
             text-align: left;
             wrap-option: auto;
         }
+        .add-chat-tab-css {
+            display: none;
+            background-color: #D2D8D8;
+            opacity: 100;
+            top:0;
+            left:0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            padding: 16px;
+            transition: opacity .5s;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow-x: hidden;
+        }
 
         @media screen and (max-height: 450px) {
             .sidenav {padding-top: 15px;}
@@ -139,30 +169,47 @@
 </head>
 <body>
 
-<div id="mySidenav" class="sidenav">
-    <div id="sidenav-menu" class="sidenavmenu">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <div id="sidenav-menu-add-chat" class="addbtn" onclick="addChat()">&times;</div>
+<div>
+    <div id="mySidenav" class="sidenav">
+        <div id="sidenav-menu1" class="sidenavmenu">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        </div>
+        <div id = "sidenav-menu2" style="display:flex;height: 30px; width: auto;padding: 10px">
+            <input  data-type="search" style="display:inline-flex;height: 30px; width: 80%;" placeholder="Search for names..">
+            <button class="addbtn" style="display:inline-flex;height: 30px; width: 10%; font-size: large;"onclick="addChat()"> + </button>
+        </div>
+        <ul id="chatlist" class="chatlist-class">
+        </ul>
     </div>
-    <form class="ui-filterable">
-        <input id="myFilter" data-type="search" placeholder="Search for names..">
-    </form>
-    <ul id="chatlist" class="chatlist-class">
-    </ul>
+
+    <div id="chat-tab-container">
+        <div id="main-container" class="main-container-class">
+            <header id="main-menu" class="main-menu-class"><span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+            <div id="main-menu-chat-name"></div>
+            </header>
+            <div id="main-msg-container"  style="display:block;overflow-y: auto;height: 848px;"></div>
+            <footer id="main-menu-footer" class="main-menu-footer-class">
+                <form id="message-text-form" class="message-text-class">
+                    <input type="text" id="message-text" placeholder="Say Something..." style="width:94%;float:left;">
+                    <input type="submit" style="width:5%;float:right;" value="send">
+                </form>
+            </footer>
+        </div>
+    </div>
 </div>
 
-<div id="chat-tab-container" chatid = "">
-    <div id="main-container" class="main-container-class">
-        <header id="main-menu" class="main-menu-class"><span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
-        <div id="main-menu-chat-name"></div>
-        </header>
-        <div id="main-msg-container"  style="display:block;overflow-y: auto;height: 848px;"></div>
-        <footer id="main-menu-footer" class="main-menu-footer-class">
-            <form id="message-text-form" class="message-text-class">
-                <input type="text" id="message-text" placeholder="Say Something..." style="width:94%;float:left;">
-                <input type="submit" style="width:5%;float:right;" value="send">
-            </form>
-        </footer>
+<div id="add-chat-tab" class="add-chat-tab-css">
+    <div id="add-chat-backbtn">
+        <button class="addbtn" style="display:inline-flex;height: 30px; width: 10%; font-size: large;"onclick="closeChatTab()">Back</button>
+    </div>
+    <div id="add-chat-container">
+        <h1>Create New Chat</h1>
+        <form id="add-chat-form">
+            Name:<br>
+            <input type="text" name="firstname"><br>
+            Friends:<br>
+            <input type="email" name="email">
+        </form>
     </div>
 </div>
 
@@ -180,6 +227,18 @@
 
     function addChat() {
         console.log('add chat called');
+        var addChannel = document.getElementById("add-chat-tab");
+        if(addChannel.style.display === 'none') {
+            addChannel.style.display = "block";
+            closeNav();
+        }
+        else
+            addChannel.style.display = "none";
+    }
+
+    function closeChatTab() {
+        console.log('close chattab called');
+        document.getElementById("add-chat-tab").style.display = 'none';
     }
 
 
@@ -193,7 +252,7 @@
             "1234" : {
                 msgs : [""],
                 endsocket : null,
-                name: 'Sridhar',
+                name: 'Sridhar'
             }
         };
         var currentChatId = null;
@@ -205,6 +264,7 @@
         var $sidenavMenu = $('#sidenav-menu');
         var $mainMenuHeader = $('#main-menu');
         var $mainMenuChatName = $('#main-menu-chat-name');
+        var $addChatForm = $('#add-chat-form');
 
 /*
         $.getJSON( "/friends-json", function( data ) {
@@ -254,21 +314,19 @@
         });
 
 
+        $addChatForm.submit(function(e){
+            e.preventDefault();
+            chats[currentChatId].endsocket.emit('message', $messageText.val());
+            $messageText.val('');
+        });
+
+
         var link = document.getElementById("chatlist");
         attachEvent(link, "click", ChatEventHandler);
 
         function attachEvent(element, type, handler) {
             if (element.addEventListener) element.addEventListener(type, handler, false);
             else element.attachEvent("on"+type, handler);
-        }
-
-        function myToggle(divId) {
-            var x = document.getElementById(divId);
-            if (x.style.display === 'none') {
-                x.style.display = 'block';
-            } else {
-                x.style.display = 'none';
-            }
         }
 
         function ChatEventHandler(e) {
@@ -317,7 +375,6 @@
 
             if(!currentChatId) {
                 console.log('hide original');
-                //$mainMsg.hide();
                 $mainMsg.hide();
                 //var newChatDiv = document.getElementById('main-msg-' + id);
                 var newChatDiv = '#main-msg-' + id;
