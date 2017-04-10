@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 const session = require('express-session');
 var passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-var GOOGLE_CLIENT_ID = "346020056758-pvpk5r4dai9s1psf34b7ujjquqpgs1gd.apps.googleusercontent.com";
-var GOOGLE_CLIENT_SECRET= "PBrJQO-a-x3iI_1-eo8B_0vl";
+var GOOGLE_CLIENT_ID = "Add google client id here";
+var GOOGLE_CLIENT_SECRET= "Add your secret here";
 var Users = require('./usersQueries');
 
 
