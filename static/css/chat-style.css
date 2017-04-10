@@ -1,0 +1,154 @@
+body {
+    font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #f1f1f1;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s
+}
+
+.sidenav a:hover, .offcanvas a:focus{
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.sidenav .addbtn {
+    position: absolute;
+    float: right;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+#myFilter{
+    height: 53px;
+    background: darkslateblue;
+}
+
+.main-container-class {
+    position: relative;
+    transition: margin-left .5s;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.main-menu-class {
+    height: 53px;
+    background: darkslateblue;
+}
+.main-msg-container-class {
+    margin-top: 0;
+    overflow: hidden;
+    background-color: #f1f1f1;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+    height: 848px;
+}
+
+.chatlist-class {
+    overflow: auto;
+    text-align: center;
+    margin-top: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    margin-bottom: 1em;
+    list-style-type: none;
+    float: left;
+    width: 100%;
+}
+ul.chatlist-class > li {
+    display: inline-block;
+    padding: 5px 20px;
+    background-color: transparent;
+    color: #000000;
+    font-family: Arial, sans;
+    font-size: 15px;
+    text-decoration: none;
+    border: 1px solid #00a5bb;
+    border-radius: 5px;
+    width: 80%;
+    align: left;
+}
+#main-menu-chat-name{
+    display: inline-block;
+    padding: 5px 20px;
+    background-color: transparent;
+    color: white;
+    font-family: Arial, sans;
+    font-size: 15px;
+    border: 1px solid #00a5bb;
+    border-radius: 5px;
+    width: 80%;
+    align: left;
+}
+
+ul.chatlist-class > li:hover {
+
+    background-color: #03A9F4;
+    border-color: #000000;
+}
+
+ul.chatlist-class > li:active {
+
+    background-color: #0c7fda;
+    border-color: #b52f1f;
+}
+
+.chat-msg-class {
+    padding: 5px;
+    align: right;
+    text-align: right;
+    wrap-option: auto;
+}
+.chat-msg-me-class {
+    padding: 5px;
+    align: left;
+    text-align: left;
+    wrap-option: auto;
+}
+.add-chat-tab-css {
+    display: none;
+    background-color: #D2D8D8;
+    opacity: 100;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    padding: 16px;
+    transition: opacity .5s;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}

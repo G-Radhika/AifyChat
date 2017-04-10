@@ -1,0 +1,5 @@
+1.Set up ngrok: ./ngrok http 3000 => get https link.
+2. Enter that at google credentials https://XXXXXXX.ngrok.io/auth/google/callback
+3. Aaand at server.js
+4. start nodejs server.js to run the app.
+5.

@@ -9,19 +9,20 @@
   "author": "radhik.g@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "express" : "latest",
-    "http" : "latest",
-    "jquery": "latest",
-    "socket.io": "latest",
-    "passport-google-oauth": "latest",
-    "passport" : "latest",
-    "body-parser": "latest",
-    "express-session": "latest",
-    "passport-google-oauth20": "latest",
-    "cookie-parser": "latest",
     "autocomplete-js": "latest",
-    "passport.socketio": "latest",
+    "body-parser": "latest",
+    "connect-mongo": "latest",
+    "cookie-parser": "latest",
+    "express": "latest",
+    "express-session": "latest",
+    "http": "latest",
+    "jquery": "latest",
     "mongodb": "latest",
-    "connect-mongo": "latest"
+    "mongoose": "^4.7.6",
+    "passport": "latest",
+    "passport-google-oauth": "latest",
+    "passport-google-oauth20": "latest",
+    "passport.socketio": "latest",
+    "socket.io": "latest"
   }
 }

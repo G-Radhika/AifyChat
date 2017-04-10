@@ -9,9 +9,9 @@ var passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 var GOOGLE_CLIENT_ID = "346020056758-pvpk5r4dai9s1psf34b7ujjquqpgs1gd.apps.googleusercontent.com";
 var GOOGLE_CLIENT_SECRET= "PBrJQO-a-x3iI_1-eo8B_0vl";
+var Users = require('./usersQueries');
 
 
-var  aifyUsers = require('./users');
 
 //express Middleware
 expressHandler.use(express.static(__dirname + '/static'));
@@ -23,7 +23,10 @@ expressHandler.use(bodyParser.urlencoded({ extended: true })); // for parsing ap
 
 var MongoStore = require('connect-mongo')(session);
 
-var sessionStore = new MongoStore({url:"mongodb://localhost/test"});
+var sessionStore = new MongoStore({url:"mongodb://localhost/AifyChatDatabase"});
+
+Users.initDatabase();
+
 
 // Configure the session and session storage.
 const sessionConfig = {
@@ -65,12 +68,12 @@ function extractProfile (profile) {
 passport.use(new GoogleStrategy({
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "https://f9e63d24.ngrok.io/auth/google/callback"
+        callbackURL: "https://a42094bf.ngrok.io/auth/google/callback"
     },
     function(accessToken, refreshToken, profile, done) {
-        var user = extractProfile(profile);
-        aifyUsers.findOrCreate(user, function (err, user) {
-            return done(err, user);
+        var userProps = extractProfile(profile);
+        Users.findOrCreate(userProps, function (err) { ///***
+            return done(err, userProps);
         });
     }
 ));
@@ -113,20 +116,15 @@ expressHandler.get('/logout', function(req, res){
     res.redirect('/');
 });
 
-// respond with "hello world" when a GET request is made to the homepage
-expressHandler.get('/friends-json', function (req, res) {
-    console.log('GET friends-json');
 
-    res.send(aifyUsers.getFriends(req.user));
-});
 
 // respond with "hello world" when a GET request is made to the homepage
 expressHandler.get('/chats-json', function (req, res) {
     console.log('GET chats-json');
     console.log(null, req.user);
-    console.log(aifyUsers.getChats(req.user));
+    //console.log(Users.getChats(req.user));
 
-    res.send(aifyUsers.getChats(req.user));
+    res.send(Users.getChats(req.user)); ///***
 });
 
 
@@ -190,15 +188,7 @@ socketio.sockets.on('connection', function (socket) {
 
         socket.on('createroom', function(msg) {
             console.log(msg);
-            var roomName = msg.roomName;
-            var roomid  = msg.roomid;
-            var useremails = msg.emails;
-            var room = {name: roomName, id: roomid};
-            var users = [];
-            useremails.forEach(function(email) {
-               users.push(aifyUsers.getUserByEmail(email));
-            });
-            aifyUsers.joinRoom(room, users);
+            Users.joinRoom(msg.roomid, msg.emails); ///***
         });
     }
 });

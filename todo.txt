@@ -1,0 +1,5 @@
+1. save new chat info persistently at server end.
+ 2. log out from app not from google
+ 3. Add all data to MongoDb
+ 4. Bscript all data for authentication.
+ 5. host the app on google cloud.
