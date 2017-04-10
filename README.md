@@ -1,8 +1,11 @@
 # AifyChat
 Socket IO chat prototypes based on multi room concept
 
-# Installation
-This example is tested on ubuntu 16.04. Install mongdb and ngrok. 
+# Setup
+This example is tested on ubuntu 16.04.  
+Install mongdb and ngrok.  
+
+# Installation 
 > ngrok http 3000  
 > git clone <this repo>  
 > cd <repo>  
